@@ -12,7 +12,15 @@ def main():
         exit(1)
 
 
-    args = sys.argv[1:]         #
+    
+    verbose = "--verbose" in sys.argv
+    
+    
+    args = []
+    for arg in sys.argv[1:]:
+        if not arg.startswith("--"):
+            args.append(arg)
+        
     user_prompt = " ".join(args)        #this basicaly covers if a user types without "" around his prompt, it will make it into a string.
     messages = [
         types.Content(role="user", parts=[types.Part(text=user_prompt)])
@@ -26,8 +34,10 @@ def main():
         model="gemini-2.0-flash-001",
         contents=messages,
     )
-    print("Prompt tokens:", response.usage_metadata.prompt_token_count)
-    print("Response tokens:", response.usage_metadata.candidates_token_count)
+    if verbose == True: 
+        print("User prompt:", {user_prompt} )
+        print("Prompt tokens:", response.usage_metadata.prompt_token_count)
+        print("Response tokens:", response.usage_metadata.candidates_token_count)
     print("Response:")
     print(response.text)
 
